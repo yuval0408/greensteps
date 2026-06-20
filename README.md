@@ -1,10 +1,5 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://ai.google.dev/static/site-assets/images/share-ais-513315318.png" />
+<img width="325" height="88" alt="image" src="https://github.com/user-attachments/assets/d0ea4eba-f9c9-4943-a11b-59077d1475a2" />
 
-[![Google AI Studio](https://img.shields.io/badge/Google%20AI%20Studio-Open%20App-blueviolet?style=for-the-badge&logo=google)](https://ai.studio/apps/d50993d1-9fad-47a9-88e1-b01ae1101f88)
-</div>
-
-# 🌱 GreenSteps
 
 > Small Steps. Lasting Impact.
 
