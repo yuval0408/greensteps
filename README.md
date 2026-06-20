@@ -1,3 +1,9 @@
+<div align="center">
+<img width="1200" height="475" alt="GHBanner" src="https://ai.google.dev/static/site-assets/images/share-ais-513315318.png" />
+
+[![Google AI Studio](https://img.shields.io/badge/Google%20AI%20Studio-Open%20App-blueviolet?style=for-the-badge&logo=google)](https://ai.studio/apps/d50993d1-9fad-47a9-88e1-b01ae1101f88)
+</div>
+
 # 🌱 GreenSteps
 
 > Small Steps. Lasting Impact.
@@ -264,134 +270,42 @@ Features:
 
 ### Frontend
 
-* Next.js 15
-* React 19
+* React
 * TypeScript
 * Tailwind CSS
-* ShadCN UI
-* Framer Motion
-
-### Backend
-
-* NestJS
-* TypeScript
-* REST APIs
-
-### Database
-
-* PostgreSQL
-* Prisma ORM
-
-### Authentication
-
-* Clerk
-* Google OAuth
-* JWT
+* Vite
 
 ### AI
 
-* OpenAI GPT
+* Gemini API
 * GreenBuddy AI Assistant
-
-### Infrastructure
-
-* Vercel
-* AWS S3
-* Supabase
-* Railway
-
-### Monitoring
-
-* PostHog
-* Sentry
-
----
-
-## 📂 Project Structure
-
-```bash
-greensteps/
-│
-├── app/
-├── components/
-├── features/
-│   ├── forest/
-│   ├── activities/
-│   ├── challenges/
-│   ├── rewards/
-│   └── ai/
-│
-├── lib/
-├── hooks/
-├── public/
-│
-├── docs/
-│   └── screenshots/
-│
-├── prisma/
-├── api/
-│
-└── README.md
-```
 
 ---
 
 ## 🚀 Getting Started
 
-Clone the repository:
+### Prerequisites
 
-```bash
-git clone https://github.com/yourusername/greensteps.git
-```
+Node.js installed on your system.
 
-Install dependencies:
+### Installation
 
-```bash
-npm install
-```
-
-Run development server:
-
-```bash
-npm run dev
-```
-
-Open:
-
-```text
-http://localhost:3000
-```
-
----
-
-## 🌱 Roadmap
-
-### Phase 1
-
-* Authentication
-* Dashboard
-* Activity Tracking
-
-### Phase 2
-
-* Forest Growth System
-* Challenges
-* Rewards
-
-### Phase 3
-
-* GreenBuddy AI
-* Personalized Recommendations
-
-### Phase 4
-
-* Family Mode
-* Community Challenges
-
-### Phase 5
-
-* Mobile Application
-* Push Notifications
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/yuval0408/greensteps.git
+   ```
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+3. Set the `GEMINI_API_KEY` in `.env.local` to your Gemini API key:
+   ```env
+   GEMINI_API_KEY=your_gemini_api_key_here
+   ```
+4. Run the development server:
+   ```bash
+   npm run dev
+   ```
 
 ---
 

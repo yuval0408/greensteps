@@ -1,0 +1,6 @@
+{
+  "name": "GreenSteps",
+  "description": "Small daily steps toward a greener future. Build sustainable green habits, grow a digital forest, and chat with an AI coach.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
