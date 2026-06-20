@@ -131,39 +131,9 @@ Age Range:
 
 ## 🖥️ MVP Screens
 
-### 1️⃣ Welcome Screen
 
-* Brand Introduction
-* Get Started CTA
-* Sustainability Journey Overview
 
-📸 Screenshot Placeholder
-
-```text
-/docs/screenshots/welcome-screen.png
-```
-
----
-
-### 2️⃣ Login Screen
-
-Features:
-
-* GreenSteps Branding
-* Interactive Seed Mascot
-* Cursor Tracking Eyes
-* Privacy Animation
-* Authentication
-
-📸 Screenshot Placeholder
-
-```text
-/docs/screenshots/login-screen.png
-```
-
----
-
-### 3️⃣ Home Dashboard
+###  Home Dashboard
 
 Features:
 
@@ -173,15 +143,11 @@ Features:
 * Streak Counter
 * GreenBuddy Suggestions
 
-📸 Screenshot Placeholder
-
-```text
-/docs/screenshots/dashboard.png
-```
+<img width="773" height="819" alt="image" src="https://github.com/user-attachments/assets/1bda9154-b717-4948-82a9-722ade35f750" />
 
 ---
 
-### 4️⃣ Activity Tracking
+###  Activity Tracking
 
 Features:
 
@@ -190,15 +156,12 @@ Features:
 * Energy Tracking
 * Shopping Tracking
 
-📸 Screenshot Placeholder
+<img width="768" height="694" alt="image" src="https://github.com/user-attachments/assets/5fc5b1ca-02da-404b-a5f3-aaced5984d60" />
 
-```text
-/docs/screenshots/activity-tracking.png
-```
 
 ---
 
-### 5️⃣ Challenges
+###  Challenges
 
 Features:
 
@@ -207,15 +170,11 @@ Features:
 * Rewards
 * Progress Tracking
 
-📸 Screenshot Placeholder
-
-```text
-/docs/screenshots/challenges.png
-```
+<img width="765" height="816" alt="image" src="https://github.com/user-attachments/assets/4c485c3c-d15d-4da9-ac1f-ba516d750bea" />
 
 ---
 
-### 6️⃣ Forest Growth
+###  Forest Growth
 
 Features:
 
@@ -224,15 +183,12 @@ Features:
 * Level System
 * Growth Milestones
 
-📸 Screenshot Placeholder
+<img width="775" height="811" alt="image" src="https://github.com/user-attachments/assets/f7428c1d-5916-422e-94e0-20f8b94f589f" />
 
-```text
-/docs/screenshots/forest-growth.png
-```
 
 ---
 
-### 7️⃣ GreenBuddy AI
+###  GreenBuddy AI
 
 Features:
 
@@ -241,15 +197,10 @@ Features:
 * Sustainability Guidance
 * Progress Insights
 
-📸 Screenshot Placeholder
+<img width="768" height="818" alt="image" src="https://github.com/user-attachments/assets/ad6262a9-9d1a-45d6-8129-b5fbd884dde9" />
 
-```text
-/docs/screenshots/greenbuddy.png
-```
 
----
-
-### 8️⃣ Family Mode
+###  Family Mode
 
 Features:
 
@@ -258,11 +209,8 @@ Features:
 * Group Progress
 * Community Impact
 
-📸 Screenshot Placeholder
+<img width="768" height="814" alt="image" src="https://github.com/user-attachments/assets/8766f278-b68a-492d-b77f-7014336a9620" />
 
-```text
-/docs/screenshots/family-mode.png
-```
 
 ---
 
