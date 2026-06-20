@@ -128,6 +128,22 @@ Age Range:
 
 
 
+
+
+### Login Screen
+
+Features:
+
+GreenSteps Branding
+Interactive Seed Mascot
+Cursor Tracking Eyes
+Privacy Animation
+Authentication
+
+![Uploading image.png…]()
+
+
+
 ###  Home Dashboard
 
 Features:
