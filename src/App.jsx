@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { UserStats, Challenge, Badge, ChatMessage, FamilyStats } from "./types";
 import { INITIAL_CHALLENGES, INITIAL_BADGES } from "./data";
 import Onboarding from "./components/Onboarding";
 import Dashboard from "./components/Dashboard";
@@ -10,12 +9,12 @@ import Profile from "./components/Profile";
 import Navbar from "./components/Navbar";
 import Login from "./components/Login";
 import Family from "./components/Family";
-import { Leaf } from "lucide-react";
-
-type ScreenType = "home" | "track" | "challenges" | "coach" | "profile" | "family";
+import SplashLoader from "./components/SplashLoader";
+import { Leaf, LogOut, Loader2 } from "lucide-react";
+import { getStoredAuthToken, clearAuthSession } from "./services/groqAuthService";
 
 // ─── Helper: get daily challenges based on date seed ──────────────────────
-function getDailyChallenges(allChallenges: Challenge[], count: number = 5): Challenge[] {
+function getDailyChallenges(allChallenges, count = 5) {
   const today = new Date().toISOString().split("T")[0];
   // Simple hash from date string for deterministic daily rotation
   let seed = 0;
@@ -40,7 +39,7 @@ function getDailyChallenges(allChallenges: Challenge[], count: number = 5): Chal
 
 export default function App() {
   // ─── Primary persistent state with localStorage + API sync ──────────
-  const [stats, setStats] = useState<UserStats>(() => {
+  const [stats, setStats] = useState(() => {
     const saved = localStorage.getItem("greensteps_user_stats");
     if (saved) {
       try {
@@ -69,14 +68,14 @@ export default function App() {
     };
   });
 
-  const [challenges, setChallenges] = useState<Challenge[]>(() => {
+  const [challenges, setChallenges] = useState(() => {
     const saved = localStorage.getItem("greensteps_challenges");
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
         // If saved challenges don't include new ones, merge
         if (parsed.length < INITIAL_CHALLENGES.length) {
-          const existingIds = new Set(parsed.map((c: Challenge) => c.id));
+          const existingIds = new Set(parsed.map((c) => c.id));
           const newChallenges = INITIAL_CHALLENGES.filter((c) => !existingIds.has(c.id));
           return [...parsed, ...newChallenges];
         }
@@ -86,14 +85,14 @@ export default function App() {
     return INITIAL_CHALLENGES;
   });
 
-  const [badges, setBadges] = useState<Badge[]>(() => {
+  const [badges, setBadges] = useState(() => {
     const saved = localStorage.getItem("greensteps_badges");
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
         // Merge any new badges
         if (parsed.length < INITIAL_BADGES.length) {
-          const existingIds = new Set(parsed.map((b: Badge) => b.id));
+          const existingIds = new Set(parsed.map((b) => b.id));
           const newBadges = INITIAL_BADGES.filter((b) => !existingIds.has(b.id));
           return [...parsed, ...newBadges];
         }
@@ -103,7 +102,7 @@ export default function App() {
     return INITIAL_BADGES;
   });
 
-  const [messages, setMessages] = useState<ChatMessage[]>(() => {
+  const [messages, setMessages] = useState(() => {
     const saved = localStorage.getItem("greensteps_messages");
     return saved ? JSON.parse(saved) : [
       {
@@ -115,64 +114,42 @@ export default function App() {
     ];
   });
 
-  const [currentScreen, setScreen] = useState<ScreenType>("home");
-  const [welcomeScreen, setWelcomeScreen] = useState<boolean>(true);
-  const [isAiLoading, setIsAiLoading] = useState<boolean>(false);
-  const [unreadCoachMessage, setUnreadCoachMessage] = useState<boolean>(false);
-  const [familyData, setFamilyData] = useState<FamilyStats | null>(null);
+  const [currentScreen, setScreen] = useState("home");
+  const [welcomeScreen, setWelcomeScreen] = useState(true);
+  const [isAiLoading, setIsAiLoading] = useState(false);
+  const [unreadCoachMessage, setUnreadCoachMessage] = useState(false);
+  const [isAppLoading, setIsAppLoading] = useState(true);
 
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(() => {
-    const saved = localStorage.getItem("greensteps_is_logged_in");
-    return saved === "true";
+  const [isLoggedIn, setIsLoggedIn] = useState(() => {
+    return Boolean(getStoredAuthToken());
   });
 
+  // Initial GreenSteps app loading splash timer
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsAppLoading(false);
+    }, 1800);
+    return () => clearTimeout(timer);
+  }, []);
+
   // ─── Auth Handlers ──────────────────────────────────────────────────
-  const handleLoginSuccess = async (enteredName: string, email?: string, password?: string) => {
-    // Try server-side registration/login
-    if (email && password) {
-      try {
-        // Try login first
-        let res = await fetch("/api/login", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, password }),
-        });
-
-        if (res.status === 401) {
-          // Not found — try register
-          res = await fetch("/api/register", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ name: enteredName, email, password }),
-          });
-        }
-
-        if (res.ok) {
-          const data = await res.json();
-          if (data.user) {
-            setStats((prev) => ({
-              ...prev,
-              ...data.user,
-              name: data.user.name || enteredName,
-              isOnboarded: data.user.isOnboarded || false,
-            }));
-            setIsLoggedIn(true);
-            localStorage.setItem("greensteps_is_logged_in", "true");
-            return;
-          }
-        }
-      } catch (e) {
-        console.warn("Server auth unavailable, falling back to local:", e);
-      }
+  const handleLoginSuccess = (user) => {
+    if (user && user.name) {
+      setStats((prev) => ({
+        ...prev,
+        name: user.name,
+        email: user.email || prev.email,
+        isOnboarded: true,
+      }));
     }
-
-    // Fallback: local-only login
-    setStats((prev) => ({
-      ...prev,
-      name: enteredName,
-    }));
     setIsLoggedIn(true);
-    localStorage.setItem("greensteps_is_logged_in", "true");
+    setScreen("home");
+  };
+
+  const handleLogout = () => {
+    clearAuthSession();
+    setIsLoggedIn(false);
+    setScreen("home");
   };
 
   // ─── Sync state to LocalStorage ─────────────────────────────────────
@@ -217,7 +194,7 @@ export default function App() {
   }, [stats.familyId]);
 
   // ─── Badge & Milestone Checks ───────────────────────────────────────
-  const checkMilestones = (updatedStats: UserStats, currentBadges: Badge[]) => {
+  const checkMilestones = (updatedStats, currentBadges) => {
     let changed = false;
     const newBadges = currentBadges.map((badge) => {
       if (badge.unlocked) return badge;
@@ -249,18 +226,13 @@ export default function App() {
   };
 
   // ─── Record tracked activity ────────────────────────────────────────
-  const handleRecordActivity = (impact: {
-    co2Saved: number;
-    waterSaved: number;
-    costSaved: number;
-    xpGained: number;
-  }) => {
+  const handleRecordActivity = (impact) => {
     setStats((prev) => {
       const newXp = prev.xp + impact.xpGained;
       const leveledUp = Math.floor(newXp / 300) > Math.floor(prev.xp / 300);
       const newLevel = leveledUp ? prev.level + 1 : prev.level;
 
-      const updated: UserStats = {
+      const updated = {
         ...prev,
         xp: newXp,
         level: newLevel,
@@ -293,7 +265,7 @@ export default function App() {
   };
 
   // ─── Complete a challenge ───────────────────────────────────────────
-  const handleCompleteChallenge = (id: string) => {
+  const handleCompleteChallenge = (id) => {
     const targetChallenge = challenges.find((c) => c.id === id);
     if (!targetChallenge || targetChallenge.completed) return;
 
@@ -306,7 +278,7 @@ export default function App() {
       const leveledUp = Math.floor(newXp / 300) > Math.floor(prev.xp / 300);
       const newLevel = leveledUp ? prev.level + 1 : prev.level;
 
-      const updated: UserStats = {
+      const updated = {
         ...prev,
         xp: newXp,
         level: newLevel,
@@ -365,14 +337,18 @@ export default function App() {
     setChallenges(INITIAL_CHALLENGES.map((c) => ({ ...c, completed: false })));
   };
 
-  // ─── Update profile name ────────────────────────────────────────────
-  const handleUpdateName = (newName: string) => {
+  // ─── Update profile data ────────────────────────────────────────────
+  const handleUpdateName = (newName) => {
     setStats((prev) => ({ ...prev, name: newName }));
   };
 
+  const handleUpdateProfile = (updatedFields) => {
+    setStats((prev) => ({ ...prev, ...updatedFields }));
+  };
+
   // ─── Chat with AI Coach ─────────────────────────────────────────────
-  const handleSendMessage = async (text: string) => {
-    const userMessage: ChatMessage = {
+  const handleSendMessage = async (text) => {
+    const userMessage = {
       id: Math.random().toString(),
       role: "user",
       content: text,
@@ -417,7 +393,7 @@ export default function App() {
       }
 
       const data = await response.json();
-      const botMessage: ChatMessage = {
+      const botMessage = {
         id: Math.random().toString(),
         role: "assistant",
         content: data.reply || "Every small choice counts deeply. Let's make our world blossom! 🌱",
@@ -441,7 +417,7 @@ export default function App() {
       );
     } catch (e) {
       console.error("Coach API communication failure:", e);
-      const botMessage: ChatMessage = {
+      const botMessage = {
         id: Math.random().toString(),
         role: "assistant",
         content: "My leaves lost connection for a second, but my roots are safe! Let's clean up plastic bottles or air-dry clothes to help lower grid pressures today! 🌳",
@@ -454,10 +430,10 @@ export default function App() {
   };
 
   // ─── Family Handlers ────────────────────────────────────────────────
-  const handleCreateFamily = async (familyName: string) => {
+  const handleCreateFamily = async (familyName) => {
     if (!stats.id) {
       // Local-only mode: create mock family
-      const mockFamily: FamilyStats = {
+      const mockFamily = {
         id: "local-family",
         name: familyName,
         inviteCode: Math.random().toString(36).substring(2, 8).toUpperCase(),
@@ -519,7 +495,7 @@ export default function App() {
     }
   };
 
-  const handleJoinFamily = async (inviteCode: string) => {
+  const handleJoinFamily = async (inviteCode) => {
     if (!stats.id) {
       // Local-only: just show a feedback
       return;
@@ -591,7 +567,7 @@ export default function App() {
     setScreen("home");
   };
 
-  const handleFinishOnboarding = (onboardData: Partial<UserStats>) => {
+  const handleFinishOnboarding = (onboardData) => {
     setStats((prev) => ({
       ...prev,
       ...onboardData,
@@ -649,6 +625,7 @@ export default function App() {
             badges={badges}
             onResetApp={handleResetApp}
             onUpdateName={handleUpdateName}
+            onUpdateProfile={handleUpdateProfile}
           />
         );
       case "family":
@@ -660,10 +637,26 @@ export default function App() {
             onJoinFamily={handleJoinFamily}
           />
         );
+      case "leaderboard":
+        return (
+          <IndiaLeaderboard
+            currentUser={stats}
+          />
+        );
       default:
         return null;
     }
   };
+
+  /* Screen 0: 3D Air Motion Leaf Loading Screen (7s, #F1F8E9) */
+  if (isAppLoading) {
+    return (
+      <SplashLoader
+        durationMs={7000}
+        onComplete={() => setIsAppLoading(false)}
+      />
+    );
+  }
 
   /* Screen 1: Login */
   if (!isLoggedIn) {
@@ -677,21 +670,33 @@ export default function App() {
 
   // Active Main dashboard app container
   return (
-    <div className="min-h-screen bg-[#FFFDF8] text-[#1F2937] font-sans pb-[100px] relative max-w-lg mx-auto border-x border-[#E8F5E9]/50 shadow-sm">
+    <div className="eco-app w-full min-h-screen bg-[#F1F8E9] text-[#1F2937] font-sans pb-[100px] relative max-w-[430px] mx-auto border-x border-[#85a528]/30 shadow-2xl md:my-4 md:border md:rounded-3xl md:min-h-[844px] overflow-hidden">
       {/* Top sticky app header bar */}
-      <header className="sticky top-0 bg-[#FFFDF8]/95 backdrop-blur-sm z-30 flex justify-between items-center px-6 py-4 border-b border-[#E8F5E9]/40">
+      <header className="sticky top-0 bg-[#F1F8E9]/95 backdrop-blur-md z-30 flex justify-between items-center px-6 py-4 border-b border-[#85a528]/30">
         <div className="flex items-center gap-2 select-none">
-          <Leaf className="w-7 h-7 fill-current text-[#2E7D32]" />
-          <h1 className="font-black text-2xl tracking-tight text-[#1F2937]">GreenSteps</h1>
+          <Leaf className="w-6 h-6 fill-current text-[#85a528]" />
+          <div>
+            <span className="block text-[10px] tracking-[0.2em] text-[#85a528] font-bold">ECO GREEN</span>
+            <h1 className="font-bold text-xl tracking-tight text-[#1F2937]">Eco Green</h1>
+          </div>
         </div>
 
         <div className="flex items-center gap-2">
           <button
             id="header-nav-coach"
             onClick={() => setScreen("coach")}
-            className="text-xs font-extrabold text-[#2E7D32] bg-[#E8F5E9] px-3 py-1.5 rounded-full flex items-center gap-1 hover:opacity-90 active:scale-95"
+            className="text-xs font-bold text-[#ffffff] bg-[#85a528] px-3.5 py-1.5 rounded-md flex items-center gap-1 hover:bg-[#6f8c1f] active:scale-95 transition-all shadow-sm cursor-pointer"
           >
             <span>Ask Sprout 💬</span>
+          </button>
+          <button
+            id="header-nav-logout"
+            onClick={handleLogout}
+            title="Sign Out"
+            className="text-xs font-bold text-[#6b7280] hover:text-[#85a528] bg-[#ffffff] border border-[#85a528]/30 px-2.5 py-1.5 rounded-md flex items-center gap-1 hover:border-[#85a528] active:scale-95 transition-all shadow-sm cursor-pointer"
+          >
+            <LogOut className="w-4 h-4 text-[#85a528]" />
+            <span className="text-[11px] text-[#1F2937]">Logout</span>
           </button>
         </div>
       </header>

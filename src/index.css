@@ -1,7 +1,387 @@
-@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700;800;900&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Armata&display=swap');
 @import "tailwindcss";
 
 @theme {
-  --font-sans: "Nunito", "Inter", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  --font-sans: "Armata", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, monospace;
 }
+
+:root {
+  /* Design Tokens with #F1F8E9 surface base */
+  --font-primary: 'Armata', sans-serif;
+  --font-size-xs: 11px;
+  --font-size-sm: 12px;
+  --font-size-md: 13px;
+  --font-size-lg: 19px;
+
+  --color-text-primary: #85a528;
+  --color-text-secondary: #556b2f;
+  --color-text-tertiary: #6b7280;
+  --color-text-inverse: #1f2937;
+  --color-surface-base: #F1F8E9;
+  --color-surface-muted: #e8f5e9;
+  --color-surface-raised: #85a528;
+
+  --space-1: 6px;
+  --space-2: 10px;
+  --space-3: 12px;
+  --space-4: 14px;
+  --space-5: 15px;
+  --space-6: 16px;
+  --space-7: 20px;
+  --space-8: 22px;
+}
+
+/* Global Reset & Typography */
+* {
+  box-sizing: border-box;
+  font-family: var(--font-primary);
+}
+
+body {
+  background-color: var(--color-surface-base);
+  color: var(--color-text-inverse);
+  font-size: var(--font-size-sm);
+  line-height: 1.5;
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Focus & Keyboard Accessibility (WCAG 2.2 AA) */
+button:focus-visible, 
+a:focus-visible, 
+input:focus-visible, 
+select:focus-visible, 
+textarea:focus-visible {
+  outline: 2px solid var(--color-text-primary) !important;
+  outline-offset: 2px !important;
+}
+
+/* Base Inputs */
+input, textarea, select {
+  font-family: var(--font-primary);
+  color: #1f2937 !important;
+  background-color: #ffffff !important;
+  border: 1px solid rgba(133, 165, 40, 0.3) !important;
+  border-radius: 6px;
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--font-size-sm);
+}
+
+input:focus, textarea:focus, select:focus {
+  border-color: var(--color-text-primary) !important;
+}
+
+/* Shared Eco Green App Structure */
+.eco-app {
+  background: var(--color-surface-base);
+  color: var(--color-text-inverse);
+  min-height: 100vh;
+}
+
+.eco-app > header {
+  background: rgba(241, 248, 233, 0.95) !important;
+  border-bottom: 1px solid rgba(133, 165, 40, 0.25) !important;
+}
+
+.eco-nav {
+  background: rgba(255, 255, 255, 0.98) !important;
+  border-top: 1px solid rgba(133, 165, 40, 0.25) !important;
+}
+
+.eco-dashboard {
+  display: grid;
+  gap: var(--space-7);
+  padding-bottom: var(--space-8);
+}
+
+.eco-command-header {
+  display: grid;
+  gap: var(--space-1);
+}
+
+.eco-command-header h2 {
+  color: #1f2937;
+  font-size: var(--font-size-lg);
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  font-weight: 700;
+  margin: 0;
+}
+
+.eco-command-header p {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+  margin: 0;
+}
+
+.eco-eyebrow {
+  display: block;
+  color: var(--color-text-primary);
+  font-size: var(--font-size-xs);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.eco-rule {
+  height: 2px;
+  width: 100%;
+  margin-top: var(--space-2);
+  background: var(--color-text-primary);
+}
+
+.eco-impact-card {
+  display: grid;
+  gap: var(--space-1);
+  padding: var(--space-5);
+  border-radius: 8px;
+  background: linear-gradient(135deg, #85a528 0%, #6f8c1f 100%);
+  border: 1px solid var(--color-text-primary);
+  color: #ffffff;
+}
+
+.eco-impact-card strong {
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.eco-impact-card > span:last-child {
+  font-size: var(--font-size-xs);
+  color: #f1f8e9;
+}
+
+.eco-label-dark {
+  color: #ffffff;
+  font-size: var(--font-size-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.eco-section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-2);
+}
+
+.eco-progress-copy {
+  color: var(--color-text-tertiary);
+  font-size: var(--font-size-xs);
+}
+
+.eco-metric-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-2);
+}
+
+.eco-metric {
+  display: grid;
+  gap: var(--space-1);
+  padding: var(--space-3);
+  border: 1px solid rgba(133, 165, 40, 0.3);
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.eco-metric-value {
+  color: #1f2937;
+  font-size: var(--font-size-md);
+  font-weight: 700;
+}
+
+.eco-metric .eco-metric-label {
+  color: var(--color-text-primary);
+  font-size: var(--font-size-xs);
+}
+
+.eco-metric-detail {
+  color: var(--color-text-tertiary);
+  font-size: var(--font-size-xs);
+}
+
+.eco-next-action {
+  display: grid;
+  gap: var(--space-4);
+  padding: var(--space-5);
+  border: 1px solid rgba(133, 165, 40, 0.3);
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.eco-action-copy {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.eco-action-copy h3 {
+  color: var(--color-text-primary);
+  font-size: var(--font-size-md);
+  margin: 0 0 var(--space-1) 0;
+}
+
+.eco-action-copy p {
+  color: var(--color-text-tertiary);
+  font-size: var(--font-size-xs);
+  margin: 0;
+}
+
+.eco-primary-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: 38px;
+  padding: var(--space-2) var(--space-5);
+  border-radius: 6px;
+  background: var(--color-text-primary);
+  color: #ffffff;
+  font-weight: 700;
+  font-size: var(--font-size-xs);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  cursor: pointer;
+  border: none;
+  transition: background-color 0.2s ease;
+}
+
+.eco-primary-button:hover {
+  background: #6f8c1f;
+}
+
+.eco-quick-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-2);
+}
+
+.eco-quick-link {
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: var(--space-1);
+  min-height: 72px;
+  padding: var(--space-2);
+  border: 1px solid rgba(133, 165, 40, 0.25);
+  border-radius: 8px;
+  background: #ffffff;
+  color: var(--color-text-primary);
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.eco-quick-link:hover {
+  border-color: var(--color-text-primary);
+  background: #e8f5e9;
+}
+
+.eco-quick-link span {
+  font-size: var(--font-size-xs);
+  color: #1f2937;
+}
+
+.eco-text-button {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  color: var(--color-text-primary);
+  font-size: var(--font-size-xs);
+  text-transform: uppercase;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.eco-text-button:hover {
+  color: #6f8c1f;
+}
+
+.eco-challenge-list {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.eco-challenge-row {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: var(--space-3);
+  align-items: center;
+  padding: var(--space-3);
+  border: 1px solid rgba(133, 165, 40, 0.25);
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.eco-challenge-row:hover {
+  border-color: var(--color-text-primary);
+}
+
+.eco-challenge-icon {
+  display: grid;
+  width: 36px;
+  height: 36px;
+  place-items: center;
+  border: 1px solid rgba(133, 165, 40, 0.3);
+  border-radius: 6px;
+  font-size: var(--font-size-md);
+  background: #f1f8e9;
+}
+
+.eco-challenge-row h4 {
+  margin: 0 0 2px 0;
+  color: #1f2937;
+  font-size: var(--font-size-md);
+}
+
+.eco-challenge-row p {
+  margin: 0;
+  color: var(--color-text-tertiary);
+  font-size: var(--font-size-xs);
+}
+
+.eco-xp {
+  display: block;
+  margin-top: 2px;
+  color: var(--color-text-primary);
+  font-size: var(--font-size-xs);
+}
+
+.eco-complete-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-1) var(--space-3);
+  border-radius: 4px;
+  background: var(--color-text-primary);
+  color: #ffffff;
+  font-weight: 700;
+  font-size: var(--font-size-xs);
+  text-transform: uppercase;
+  border: none;
+  cursor: pointer;
+}
+
+.eco-complete-button:hover {
+  background: #6f8c1f;
+}
+
+.eco-empty-state {
+  padding: var(--space-5);
+  border: 1px dashed var(--color-text-tertiary);
+  border-radius: 8px;
+  color: var(--color-text-tertiary);
+  font-size: var(--font-size-sm);
+  text-align: center;
+}
+
+@media (max-width: 360px) {
+  .eco-metric-grid { grid-template-columns: 1fr; }
+  .eco-quick-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+

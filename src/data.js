@@ -1,6 +1,4 @@
-import { Challenge, Badge, TrackQuestion } from "./types";
-
-export const INITIAL_CHALLENGES: Challenge[] = [
+export const INITIAL_CHALLENGES = [
   // ── Transport ──────────────────────────────────────────────────────────
   {
     id: "c1",
@@ -270,7 +268,7 @@ export const INITIAL_CHALLENGES: Challenge[] = [
   },
 ];
 
-export const INITIAL_BADGES: Badge[] = [
+export const INITIAL_BADGES = [
   {
     id: "b1",
     title: "Water Saver",
@@ -353,7 +351,7 @@ export const INITIAL_BADGES: Badge[] = [
   },
 ];
 
-export const TRACKING_QUESTIONS: Record<string, TrackQuestion> = {
+export const TRACKING_QUESTIONS = {
   transport: {
     id: "q_transport",
     question: "How did you travel today?",
@@ -509,3 +507,27 @@ export const TRACKING_QUESTIONS: Record<string, TrackQuestion> = {
     ]
   }
 };
+
+export async function fetchGlobalLeaderboard(metric = "xp", limit = 100) {
+  try {
+    const res = await fetch(`/api/leaderboard/global?metric=${metric}&limit=${limit}`);
+    if (!res.ok) throw new Error("Failed to fetch global leaderboard");
+    return await res.json();
+  } catch (error) {
+    console.error("fetchGlobalLeaderboard error:", error);
+    return { leaderboard: [], nationalTotals: { totalUsers: 100, totalCo2: 12500, totalWater: 85000, totalCost: 320000, totalTrees: 450 } };
+  }
+}
+
+export async function searchUsersApi({ q = "", city = "", sortBy = "xp", page = 1, limit = 20 } = {}) {
+  try {
+    const queryParams = new URLSearchParams({ q, city, sortBy, page, limit });
+    const res = await fetch(`/api/users?${queryParams.toString()}`);
+    if (!res.ok) throw new Error("Failed to fetch users");
+    return await res.json();
+  } catch (error) {
+    console.error("searchUsersApi error:", error);
+    return { users: [], total: 0, page: 1, totalPages: 1 };
+  }
+}
+

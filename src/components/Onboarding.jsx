@@ -1,18 +1,13 @@
 import React, { useState } from "react";
-import { UserStats } from "../types";
-import { Leaf, Award, Compass, HelpCircle, Users, ArrowRight, Sparkles, Check } from "lucide-react";
+import { Leaf, ArrowRight } from "lucide-react";
 
-interface OnboardingProps {
-  onComplete: (stats: Partial<UserStats>) => void;
-}
-
-export default function Onboarding({ onComplete }: OnboardingProps) {
-  const [step, setStep] = useState<number>(0);
-  const [name, setName] = useState<string>("");
-  const [homePeople, setHomePeople] = useState<number>(1);
-  const [travelMode, setTravelMode] = useState<string>("Walk/Cycle");
-  const [selectedGoal, setSelectedGoal] = useState<string>("Save Energy");
-  const [weeklyGoal, setWeeklyGoal] = useState<number>(300);
+export default function Onboarding({ onComplete }) {
+  const [step, setStep] = useState(0);
+  const [name, setName] = useState("");
+  const [homePeople, setHomePeople] = useState(1);
+  const [travelMode, setTravelMode] = useState("Walk/Cycle");
+  const [selectedGoal, setSelectedGoal] = useState("Save Energy");
+  const [weeklyGoal, setWeeklyGoal] = useState(300);
 
   const statsOptions = {
     homePeople: [1, 2, 3, 4, 5],
@@ -65,22 +60,22 @@ export default function Onboarding({ onComplete }: OnboardingProps) {
   };
 
   return (
-    <div className="min-h-screen bg-[#FFFDF8] flex flex-col justify-between py-12 px-6 max-w-lg mx-auto font-sans">
+    <div className="min-h-screen bg-[#F1F8E9] text-[#1F2937] flex flex-col justify-between py-10 px-6 max-w-lg mx-auto font-sans">
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
-        <div className="flex items-center gap-2 text-[#2E7D32]">
-          <Leaf className="w-8 h-8 fill-current text-[#2E7D32]" />
-          <span className="font-extrabold text-2xl tracking-tight text-[#1F2937]">GreenSteps</span>
+        <div className="flex items-center gap-2 text-[#85a528]">
+          <Leaf className="w-6 h-6 fill-current text-[#85a528]" />
+          <span className="font-bold text-xl tracking-tight text-[#1F2937]">Eco Green</span>
         </div>
-        <div className="text-sm font-bold text-[#6B7280]">
+        <div className="text-xs font-bold text-[#6B7280]">
           Step {step + 1} of 5
         </div>
       </div>
 
       {/* Progress Bar */}
-      <div className="w-full h-3 bg-[#E8F5E9] rounded-full overflow-hidden mb-8 shadow-inner">
+      <div className="w-full h-2 bg-[#ffffff] rounded-full overflow-hidden mb-8 border border-[#85a528]/30 shadow-sm">
         <div
-          className="h-full bg-[#2E7D32] rounded-full transition-all duration-500 ease-out"
+          className="h-full bg-[#85a528] rounded-full transition-all duration-500 ease-out"
           style={{ width: `${currentStepPercentage}%` }}
         />
       </div>
@@ -91,15 +86,15 @@ export default function Onboarding({ onComplete }: OnboardingProps) {
           <div className="space-y-6">
             <div className="text-center">
               <span className="text-5xl inline-block mb-4 animate-bounce">👋</span>
-              <h1 className="text-3xl font-extrabold text-[#1F2937] leading-tight mb-3">
-                Welcome to GreenSteps!
+              <h1 className="text-2xl font-bold text-[#1F2937] leading-tight mb-2">
+                Welcome to Eco Green!
               </h1>
-              <p className="text-lg text-[#6B7280]">
-                Small daily steps toward a greener future. What should Sprout (your AI coach) call you?
+              <p className="text-xs text-[#556B2F]">
+                Small daily steps toward a cleaner future. What should Sprout (your AI coach) call you?
               </p>
             </div>
             <div className="space-y-2">
-              <label htmlFor="name-input" className="block text-sm font-bold text-[#1F2937] ml-1">
+              <label htmlFor="name-input" className="block text-xs font-bold text-[#85a528] ml-1">
                 Your Preferred Name
               </label>
               <input
@@ -108,8 +103,7 @@ export default function Onboarding({ onComplete }: OnboardingProps) {
                 placeholder="e.g. Sarah, David, Professor John"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="w-full text-base px-5 py-4 border-2 border-[#E8F5E9] bg-white rounded-2xl text-[#1F2937] placeholder-[#9CA3AF] focus:border-[#2E7D32] focus:ring-0 transition-colors shadow-sm outline-none"
-                style={{ fontSize: "18px" }}
+                className="w-full text-xs px-4 py-3 border border-[#85a528]/30 bg-[#ffffff] rounded-lg text-[#1F2937] placeholder-[#9f9fa5] focus:border-[#85a528] outline-none shadow-sm"
               />
             </div>
           </div>
@@ -119,10 +113,10 @@ export default function Onboarding({ onComplete }: OnboardingProps) {
           <div className="space-y-6">
             <div className="text-center">
               <span className="text-5xl inline-block mb-4">🏠</span>
-              <h1 id="home-question" className="text-3xl font-extrabold text-[#1F2937] leading-tight mb-3">
+              <h1 id="home-question" className="text-2xl font-bold text-[#1F2937] leading-tight mb-2">
                 How many people live in your home?
               </h1>
-              <p className="text-lg text-[#6B7280]">
+              <p className="text-xs text-[#556B2F]">
                 We use this to estimate average home baseline utilities and guide custom recommendations.
               </p>
             </div>
@@ -134,10 +128,10 @@ export default function Onboarding({ onComplete }: OnboardingProps) {
                   onClick={() => setHomePeople(num)}
                   aria-checked={homePeople === num}
                   role="radio"
-                  className={`w-14 h-14 rounded-2xl font-bold text-xl flex items-center justify-center transition-all ${
+                  className={`w-12 h-12 rounded-lg font-bold text-lg flex items-center justify-center transition-all ${
                     homePeople === num
-                      ? "bg-[#2E7D32] text-white shadow-md scale-105"
-                      : "bg-white text-[#1F2937] border-2 border-[#E8F5E9] hover:bg-[#E8F5E9]/50"
+                      ? "bg-[#85a528] text-white shadow-md scale-105"
+                      : "bg-[#ffffff] text-[#1F2937] border border-[#85a528]/30 hover:border-[#85a528] shadow-sm"
                   }`}
                 >
                   {num === 5 ? "5+" : num}
@@ -151,10 +145,10 @@ export default function Onboarding({ onComplete }: OnboardingProps) {
           <div className="space-y-6">
             <div className="text-center">
               <span className="text-5xl inline-block mb-4">🚶‍♀️🚌</span>
-              <h1 id="travel-question" className="text-3xl font-extrabold text-[#1F2937] leading-tight mb-3">
+              <h1 id="travel-question" className="text-2xl font-bold text-[#1F2937] leading-tight mb-2">
                 How do you usually travel?
               </h1>
-              <p className="text-lg text-[#6B7280]">
+              <p className="text-xs text-[#556B2F]">
                 Choose your primary commute style for school, jobs, or utilities.
               </p>
             </div>
@@ -166,15 +160,15 @@ export default function Onboarding({ onComplete }: OnboardingProps) {
                   onClick={() => setTravelMode(mode.label)}
                   aria-checked={travelMode === mode.label}
                   role="radio"
-                  className={`flex items-center gap-4 px-5 py-4 border-2 rounded-2xl transition-all text-left ${
+                  className={`flex items-center gap-4 px-4 py-3.5 border rounded-xl transition-all text-left shadow-sm ${
                     travelMode === mode.label
-                      ? "border-[#2E7D32] bg-[#E8F5E9]/40 text-[#2E7D32] font-semibold scale-[1.02]"
-                      : "border-[#E8F5E9] bg-white text-[#1F2937] hover:bg-neutral-50"
+                      ? "border-[#85a528] bg-[#E8F5E9] text-[#1F2937] font-bold"
+                      : "border-[#85a528]/30 bg-[#ffffff] text-[#1F2937] hover:border-[#85a528]"
                   }`}
                 >
-                  <span className="text-3xl">{mode.icon}</span>
+                  <span className="text-2xl">{mode.icon}</span>
                   <div className="flex-1">
-                    <div className="font-bold text-lg text-[#1F2937]">{mode.label}</div>
+                    <div className="font-bold text-sm text-[#1F2937]">{mode.label}</div>
                   </div>
                 </button>
               ))}
@@ -186,11 +180,11 @@ export default function Onboarding({ onComplete }: OnboardingProps) {
           <div className="space-y-6">
             <div className="text-center">
               <span className="text-5xl inline-block mb-4">🌟</span>
-              <h1 id="goal-question" className="text-3xl font-extrabold text-[#1F2937] leading-tight mb-3">
+              <h1 id="goal-question" className="text-2xl font-bold text-[#1F2937] leading-tight mb-2">
                 Which eco-friendly goal matters most?
               </h1>
-              <p className="text-lg text-[#6B7280]">
-                We'll prioritize this in your feed, but you can always do everything!
+              <p className="text-xs text-[#556B2F]">
+                We&apos;ll prioritize this in your feed, but you can always do everything!
               </p>
             </div>
             <div role="radiogroup" aria-labelledby="goal-question" className="grid grid-cols-1 gap-3">
@@ -201,16 +195,16 @@ export default function Onboarding({ onComplete }: OnboardingProps) {
                   onClick={() => setSelectedGoal(g.id)}
                   aria-checked={selectedGoal === g.id}
                   role="radio"
-                  className={`flex items-start gap-4 px-5 py-4 border-2 rounded-2xl transition-all text-left ${
+                  className={`flex items-start gap-4 px-4 py-3.5 border rounded-xl transition-all text-left shadow-sm ${
                     selectedGoal === g.id
-                      ? "border-[#2E7D32] bg-[#E8F5E9]/40 text-[#2E7D32] font-semibold scale-[1.02]"
-                      : "border-[#E8F5E9] bg-white text-[#1F2937] hover:bg-neutral-50"
+                      ? "border-[#85a528] bg-[#E8F5E9] text-[#1F2937] font-bold"
+                      : "border-[#85a528]/30 bg-[#ffffff] text-[#1F2937] hover:border-[#85a528]"
                   }`}
                 >
-                  <span className="text-3xl mt-1">{g.icon}</span>
+                  <span className="text-2xl mt-0.5">{g.icon}</span>
                   <div className="flex-1">
-                    <div className="font-bold text-lg text-[#1F2937]">{g.label}</div>
-                    <div className="text-[#6B7280] text-sm mt-0.5 leading-relaxed">{g.desc}</div>
+                    <div className="font-bold text-sm text-[#1F2937]">{g.label}</div>
+                    <div className="text-[#6B7280] text-xs mt-0.5 leading-relaxed">{g.desc}</div>
                   </div>
                 </button>
               ))}
@@ -222,10 +216,10 @@ export default function Onboarding({ onComplete }: OnboardingProps) {
           <div className="space-y-6">
             <div className="text-center">
               <span className="text-5xl inline-block mb-4">🏆</span>
-              <h1 id="weekly-goal-question" className="text-3xl font-extrabold text-[#1F2937] leading-tight mb-3">
+              <h1 id="weekly-goal-question" className="text-2xl font-bold text-[#1F2937] leading-tight mb-2">
                 Choose your weekly goal
               </h1>
-              <p className="text-lg text-[#6B7280]">
+              <p className="text-xs text-[#556B2F]">
                 Select a comfortable pace. You earn XP by checking off clean habits!
               </p>
             </div>
@@ -237,16 +231,16 @@ export default function Onboarding({ onComplete }: OnboardingProps) {
                   onClick={() => setWeeklyGoal(wg.xp)}
                   aria-checked={weeklyGoal === wg.xp}
                   role="radio"
-                  className={`flex items-start gap-4 px-5 py-4 border-2 rounded-2xl transition-all text-left ${
+                  className={`flex items-start gap-4 px-4 py-3.5 border rounded-xl transition-all text-left shadow-sm ${
                     weeklyGoal === wg.xp
-                      ? "border-[#2E7D32] bg-[#E8F5E9]/40 text-[#2E7D32] font-semibold scale-[1.02]"
-                      : "border-[#E8F5E9] bg-white text-[#1F2937] hover:bg-neutral-50"
+                      ? "border-[#85a528] bg-[#E8F5E9] text-[#1F2937] font-bold"
+                      : "border-[#85a528]/30 bg-[#ffffff] text-[#1F2937] hover:border-[#85a528]"
                   }`}
                 >
-                  <span className="text-3xl mt-1">{wg.icon}</span>
+                  <span className="text-2xl mt-0.5">{wg.icon}</span>
                   <div className="flex-1">
-                    <div className="font-bold text-lg text-[#1F2937]">{wg.label}</div>
-                    <div className="text-[#6B7280] text-sm mt-0.5 leading-relaxed">{wg.desc}</div>
+                    <div className="font-bold text-sm text-[#1F2937]">{wg.label}</div>
+                    <div className="text-[#6B7280] text-xs mt-0.5 leading-relaxed">{wg.desc}</div>
                   </div>
                 </button>
               ))}
@@ -256,12 +250,12 @@ export default function Onboarding({ onComplete }: OnboardingProps) {
       </div>
 
       {/* Footer Navigation Buttons */}
-      <div className="flex items-center gap-4 mt-8">
+      <div className="flex items-center gap-3 mt-8">
         {step > 0 ? (
           <button
             id="back-button"
             onClick={handleBack}
-            className="flex-1 max-w-[120px] bg-white border-2 border-[#E8F5E9] text-[#6B7280] hover:bg-neutral-50 text-center py-4 rounded-2xl font-bold transition-all shadow-sm active:scale-95 text-lg"
+            className="flex-1 max-w-[100px] bg-[#ffffff] border border-[#85a528]/30 text-[#85a528] text-center py-3 rounded-lg font-bold transition-all active:scale-95 text-xs uppercase tracking-wider shadow-sm"
           >
             Back
           </button>
@@ -269,10 +263,10 @@ export default function Onboarding({ onComplete }: OnboardingProps) {
         <button
           id="next-button"
           onClick={handleNext}
-          className="flex-1 bg-[#2E7D32] hover:bg-[#25632a] text-white py-4 rounded-2xl font-bold flex items-center justify-center gap-3 transition-all shadow-md hover:shadow-lg active:scale-95 text-lg"
+          className="flex-1 bg-[#85a528] hover:bg-[#6f8c1f] text-white py-3 rounded-lg font-bold flex items-center justify-center gap-2 transition-all shadow-md active:scale-95 text-xs uppercase tracking-wider"
         >
           {step === 4 ? "Let's Begin!" : "Continue"}
-          <ArrowRight className="w-5 h-5" />
+          <ArrowRight className="w-4 h-4" />
         </button>
       </div>
     </div>
