@@ -2,10 +2,14 @@ import express from "express";
 import path from "path";
 import fs from "fs";
 import { createServer as createViteServer } from "vite";
-import { GoogleGenAI } from "@google/genai";
+import Groq from "groq-sdk";
 import dotenv from "dotenv";
 
 dotenv.config();
+
+const groq = new Groq({
+  apiKey: process.env.GROQ_API_KEY || process.env.GEMINI_API_KEY || "dummy_key_for_dev",
+});
 
 // ─── JSON File Store Helpers ────────────────────────────────────────────────
 const DATA_DIR = path.join(process.cwd(), "data");
@@ -16,7 +20,7 @@ function ensureDataDir() {
   }
 }
 
-function readJSON(filename: string): any {
+function readJSON(filename) {
   const filepath = path.join(DATA_DIR, filename);
   if (!fs.existsSync(filepath)) return null;
   try {
@@ -26,21 +30,21 @@ function readJSON(filename: string): any {
   }
 }
 
-function writeJSON(filename: string, data: any) {
+function writeJSON(filename, data) {
   ensureDataDir();
   fs.writeFileSync(path.join(DATA_DIR, filename), JSON.stringify(data, null, 2));
 }
 
-function generateId(): string {
+function generateId() {
   return Date.now().toString(36) + Math.random().toString(36).substring(2, 8);
 }
 
-function generateInviteCode(): string {
+function generateInviteCode() {
   return Math.random().toString(36).substring(2, 8).toUpperCase();
 }
 
 // ─── Default Data Factories ─────────────────────────────────────────────────
-function createDefaultUser(name: string, email: string, password: string) {
+function createDefaultUser(name, email, password) {
   return {
     id: generateId(),
     name,
@@ -66,6 +70,108 @@ function createDefaultUser(name: string, email: string, password: string) {
   };
 }
 
+function seedIndianUsers() {
+  const firstNamesMale = [
+    "Aarav", "Rohan", "Vikram", "Siddharth", "Aditya", "Arjun", "Dev", "Vivaan", "Kabir", "Rajesh",
+    "Suresh", "Aniket", "Rahul", "Ishan", "Parth", "Yash", "Pranav", "Alok", "Nikhil", "Varun",
+    "Kunal", "Amit", "Sachin", "Dhruv", "Manav", "Utkarsh", "Tushar", "Akash", "Kartik", "Gourav",
+    "Chirag", "Tarun", "Samar", "Madhav", "Mayank", "Harsh", "Gautam", "Deepak", "Chetan", "Sameer"
+  ];
+  const firstNamesFemale = [
+    "Ananya", "Priya", "Kavya", "Meera", "Ishita", "Sneha", "Riya", "Diya", "Aditi", "Pooja",
+    "Shruti", "Divya", "Tanvi", "Shreya", "Neha", "Sakshi", "Deepika", "Swati", "Priyanka", "Rashmi",
+    "Aarti", "Anjali", "Sanjana", "Simran", "Archana", "Vidya", "Bhavna", "Ritika", "Sunita", "Chetna"
+  ];
+  const lastNames = [
+    "Sharma", "Patel", "Verma", "Iyer", "Reddy", "Gupta", "Singh", "Kumar", "Nair", "Deshmukh",
+    "Joshi", "Rao", "Mehta", "Das", "Chatterjee", "Banerjee", "Mukherjee", "Agarwal", "Kulkarni", "Shah",
+    "Bhat", "Chaudhary", "Gill", "Malviya", "Thakur", "Srivastava", "Saxena", "Mishra", "Tripathi", "Menon"
+  ];
+  const cities = [
+    "Mumbai", "Delhi", "Bengaluru", "Chennai", "Hyderabad", "Pune", "Ahmedabad", "Kolkata", "Jaipur", "Kochi",
+    "Chandigarh", "Lucknow", "Indore", "Surat", "Coimbatore", "Nagpur", "Bhopal", "Vadodara", "Visakhapatnam", "Patna"
+  ];
+  const travelModes = ["Walk / Bicycle", "Public Transport (Bus/Metro)", "EV / Hybrid Vehicle", "Carpooling", "Electric Scooter"];
+  const goalsList = [
+    ["Save Energy", "Reduce Plastic"], ["Save Water", "Composting"], ["Zero Waste", "Plant Trees"],
+    ["Public Transport", "Save Energy"], ["Save Water", "Plant-based Diet"]
+  ];
+
+  const existingUsers = readJSON("users.json") || [];
+  let demoUser = existingUsers.find(u => u.email === "yuvalpatel04@gmail.com") || {
+    id: "mtect41ipt7352",
+    name: "Yuval Sanjay Patel",
+    email: "yuvalpatel04@gmail.com",
+    password: "yuval@123",
+    avatar: "",
+    city: "Mumbai",
+    homePeople: 3,
+    travelMode: "Walk / Bicycle",
+    sustainabilityGoals: ["Save Energy", "Save Water"],
+    weeklyGoalXP: 300,
+    level: 5,
+    xp: 1250,
+    co2Saved: 142.5,
+    waterSaved: 850,
+    costSaved: 3200,
+    streak: 12,
+    isOnboarded: true,
+    completedActivityCount: 28,
+    forestTrees: 6,
+    lastActiveDate: new Date().toISOString().split("T")[0],
+    createdAt: "2026-08-20T10:00:00.000Z"
+  };
+
+  const users = [demoUser];
+
+  for (let i = 2; i <= 100; i++) {
+    const isMale = i % 2 === 0;
+    const firstName = isMale 
+      ? firstNamesMale[(i / 2 - 1) % firstNamesMale.length]
+      : firstNamesFemale[Math.floor(i / 2) % firstNamesFemale.length];
+    const lastName = lastNames[(i * 7) % lastNames.length];
+    const name = `${firstName} ${lastName}`;
+    const email = `${firstName.toLowerCase()}.${lastName.toLowerCase()}${i}@gmail.com`;
+    const city = cities[i % cities.length];
+    const level = Math.floor(Math.random() * 14) + 1;
+    const xp = level * 300 + Math.floor(Math.random() * 250);
+    const co2Saved = parseFloat((xp * 0.12 + Math.random() * 20).toFixed(1));
+    const waterSaved = Math.floor(xp * 0.85 + Math.random() * 150);
+    const costSaved = Math.floor(xp * 2.8 + Math.random() * 500);
+    const streak = Math.floor(Math.random() * 30) + 1;
+    const completedActivityCount = Math.floor(xp / 40);
+    const forestTrees = Math.floor(xp / 200);
+
+    users.push({
+      id: `user_in_${i}_${Date.now().toString(36)}`,
+      name,
+      email,
+      password: "password123",
+      avatar: "",
+      city,
+      homePeople: (i % 4) + 1,
+      travelMode: travelModes[i % travelModes.length],
+      sustainabilityGoals: goalsList[i % goalsList.length],
+      weeklyGoalXP: 300,
+      level,
+      xp,
+      co2Saved,
+      waterSaved,
+      costSaved,
+      streak,
+      isOnboarded: true,
+      completedActivityCount,
+      forestTrees,
+      lastActiveDate: new Date().toISOString().split("T")[0],
+      createdAt: new Date(Date.now() - i * 86400000).toISOString()
+    });
+  }
+
+  users.sort((a, b) => b.xp - a.xp);
+  writeJSON("users.json", users);
+  console.log(`Seeded ${users.length} Indian users into users.json`);
+}
+
 // ─── Server Setup ───────────────────────────────────────────────────────────
 async function startServer() {
   const app = express();
@@ -75,18 +181,13 @@ async function startServer() {
   ensureDataDir();
 
   // Initialize data files if they don't exist
-  if (!readJSON("users.json")) writeJSON("users.json", []);
+  if (!readJSON("users.json") || (readJSON("users.json") || []).length < 100) {
+    seedIndianUsers();
+  }
   if (!readJSON("families.json")) writeJSON("families.json", []);
 
-  // ─── Initializing Google Gen AI Client ──────────────────────────────────
-  const ai = new GoogleGenAI({
-    apiKey: process.env.GEMINI_API_KEY,
-    httpOptions: {
-      headers: {
-        "User-Agent": "aistudio-build",
-      },
-    },
-  });
+  // ─── Initializing Groq API Client ──────────────────────────────────
+  // Groq client is initialized at top level with process.env.GROQ_API_KEY
 
   // ════════════════════════════════════════════════════════════════════════
   // AUTH ENDPOINTS
@@ -101,7 +202,7 @@ async function startServer() {
       }
 
       const users = readJSON("users.json") || [];
-      const existing = users.find((u: any) => u.email === email);
+      const existing = users.find((u) => u.email === email);
       if (existing) {
         return res.status(409).json({ error: "An account with this email already exists. Try logging in." });
       }
@@ -112,7 +213,7 @@ async function startServer() {
 
       const { password: _, ...safeUser } = newUser;
       res.json({ user: safeUser });
-    } catch (error: any) {
+    } catch (error) {
       console.error("Register error:", error);
       res.status(500).json({ error: "Registration failed." });
     }
@@ -128,7 +229,7 @@ async function startServer() {
 
       const users = readJSON("users.json") || [];
       const user = users.find(
-        (u: any) => u.email === email.toLowerCase().trim() && u.password === password
+        (u) => u.email === email.toLowerCase().trim() && u.password === password
       );
 
       if (!user) {
@@ -154,7 +255,7 @@ async function startServer() {
 
       const { password: _, ...safeUser } = user;
       res.json({ user: safeUser });
-    } catch (error: any) {
+    } catch (error) {
       console.error("Login error:", error);
       res.status(500).json({ error: "Login failed." });
     }
@@ -168,12 +269,12 @@ async function startServer() {
   app.get("/api/user/:id", (req, res) => {
     try {
       const users = readJSON("users.json") || [];
-      const user = users.find((u: any) => u.id === req.params.id);
+      const user = users.find((u) => u.id === req.params.id);
       if (!user) return res.status(404).json({ error: "User not found." });
 
       const { password: _, ...safeUser } = user;
       res.json({ user: safeUser });
-    } catch (error: any) {
+    } catch (error) {
       console.error("Get user error:", error);
       res.status(500).json({ error: "Failed to fetch user." });
     }
@@ -183,7 +284,7 @@ async function startServer() {
   app.put("/api/user/:id", (req, res) => {
     try {
       const users = readJSON("users.json") || [];
-      const idx = users.findIndex((u: any) => u.id === req.params.id);
+      const idx = users.findIndex((u) => u.id === req.params.id);
       if (idx === -1) return res.status(404).json({ error: "User not found." });
 
       const updates = req.body;
@@ -199,9 +300,102 @@ async function startServer() {
 
       const { password: _, ...safeUser } = users[idx];
       res.json({ user: safeUser });
-    } catch (error: any) {
+    } catch (error) {
       console.error("Update user error:", error);
       res.status(500).json({ error: "Failed to update user." });
+    }
+  });
+
+  // Get list of all Indian users (with search, city filter, pagination, sorting)
+  app.get("/api/users", (req, res) => {
+    try {
+      let users = readJSON("users.json") || [];
+      const { q, city, sortBy = "xp", order = "desc", page = 1, limit = 20 } = req.query;
+
+      // Filter by search query (name, city, email)
+      if (q) {
+        const queryStr = q.toString().toLowerCase().trim();
+        users = users.filter(
+          (u) =>
+            u.name.toLowerCase().includes(queryStr) ||
+            (u.city && u.city.toLowerCase().includes(queryStr)) ||
+            u.email.toLowerCase().includes(queryStr)
+        );
+      }
+
+      // Filter by city
+      if (city) {
+        const cityStr = city.toString().toLowerCase().trim();
+        users = users.filter((u) => u.city && u.city.toLowerCase() === cityStr);
+      }
+
+      // Sorting
+      const sortKey = ["xp", "co2Saved", "waterSaved", "streak", "level", "costSaved"].includes(sortBy)
+        ? sortBy
+        : "xp";
+      const isAsc = order === "asc";
+      users.sort((a, b) => {
+        const valA = a[sortKey] || 0;
+        const valB = b[sortKey] || 0;
+        return isAsc ? valA - valB : valB - valA;
+      });
+
+      // Pagination
+      const total = users.length;
+      const pageNum = parseInt(page, 10) || 1;
+      const limitNum = parseInt(limit, 10) || 20;
+      const startIndex = (pageNum - 1) * limitNum;
+      const paginated = users.slice(startIndex, startIndex + limitNum).map(({ password, ...user }) => user);
+
+      res.json({
+        total,
+        page: pageNum,
+        totalPages: Math.ceil(total / limitNum),
+        users: paginated,
+      });
+    } catch (error) {
+      console.error("Fetch users error:", error);
+      res.status(500).json({ error: "Failed to fetch users list." });
+    }
+  });
+
+  // Get global Indian leaderboard
+  app.get("/api/leaderboard/global", (req, res) => {
+    try {
+      const users = readJSON("users.json") || [];
+      const { metric = "xp", limit = 100 } = req.query;
+
+      const validMetrics = ["xp", "co2Saved", "waterSaved", "streak", "level", "costSaved"];
+      const sortMetric = validMetrics.includes(metric) ? metric : "xp";
+
+      const leaderboard = [...users]
+        .sort((a, b) => (b[sortMetric] || 0) - (a[sortMetric] || 0))
+        .slice(0, parseInt(limit, 10) || 100)
+        .map(({ password, ...user }, rank) => ({
+          rank: rank + 1,
+          ...user,
+        }));
+
+      // Calculate national impact totals across all Indian users
+      const nationalTotals = users.reduce(
+        (acc, u) => ({
+          totalUsers: acc.totalUsers + 1,
+          totalCo2: acc.totalCo2 + (u.co2Saved || 0),
+          totalWater: acc.totalWater + (u.waterSaved || 0),
+          totalCost: acc.totalCost + (u.costSaved || 0),
+          totalTrees: acc.totalTrees + (u.forestTrees || 0),
+        }),
+        { totalUsers: 0, totalCo2: 0, totalWater: 0, totalCost: 0, totalTrees: 0 }
+      );
+
+      res.json({
+        leaderboard,
+        nationalTotals,
+        metric: sortMetric,
+      });
+    } catch (error) {
+      console.error("Global leaderboard error:", error);
+      res.status(500).json({ error: "Failed to fetch global leaderboard." });
     }
   });
 
@@ -216,7 +410,7 @@ async function startServer() {
       if (!userId) return res.status(400).json({ error: "userId is required." });
 
       const users = readJSON("users.json") || [];
-      const userIdx = users.findIndex((u: any) => u.id === userId);
+      const userIdx = users.findIndex((u) => u.id === userId);
       if (userIdx === -1) return res.status(404).json({ error: "User not found." });
 
       const user = users[userIdx];
@@ -238,7 +432,7 @@ async function startServer() {
 
       const { password: _, ...safeUser } = user;
       res.json({ user: safeUser, challengeId: req.params.challengeId });
-    } catch (error: any) {
+    } catch (error) {
       console.error("Complete challenge error:", error);
       res.status(500).json({ error: "Failed to complete challenge." });
     }
@@ -254,7 +448,7 @@ async function startServer() {
       if (!userId) return res.status(400).json({ error: "userId is required." });
 
       const users = readJSON("users.json") || [];
-      const userIdx = users.findIndex((u: any) => u.id === userId);
+      const userIdx = users.findIndex((u) => u.id === userId);
       if (userIdx === -1) return res.status(404).json({ error: "User not found." });
 
       const user = users[userIdx];
@@ -274,7 +468,7 @@ async function startServer() {
 
       const { password: _, ...safeUser } = user;
       res.json({ user: safeUser });
-    } catch (error: any) {
+    } catch (error) {
       console.error("Activity error:", error);
       res.status(500).json({ error: "Failed to record activity." });
     }
@@ -294,7 +488,7 @@ async function startServer() {
 
       const users = readJSON("users.json") || [];
       const families = readJSON("families.json") || [];
-      const userIdx = users.findIndex((u: any) => u.id === userId);
+      const userIdx = users.findIndex((u) => u.id === userId);
       if (userIdx === -1) return res.status(404).json({ error: "User not found." });
 
       const user = users[userIdx];
@@ -330,7 +524,7 @@ async function startServer() {
       writeJSON("users.json", users);
 
       res.json({ family });
-    } catch (error: any) {
+    } catch (error) {
       console.error("Create family error:", error);
       res.status(500).json({ error: "Failed to create family." });
     }
@@ -346,11 +540,11 @@ async function startServer() {
 
       const users = readJSON("users.json") || [];
       const families = readJSON("families.json") || [];
-      const userIdx = users.findIndex((u: any) => u.id === userId);
+      const userIdx = users.findIndex((u) => u.id === userId);
       if (userIdx === -1) return res.status(404).json({ error: "User not found." });
 
       const familyIdx = families.findIndex(
-        (f: any) => f.inviteCode === inviteCode.toUpperCase()
+        (f) => f.inviteCode === inviteCode.toUpperCase()
       );
       if (familyIdx === -1) return res.status(404).json({ error: "Invalid invite code." });
 
@@ -358,7 +552,7 @@ async function startServer() {
       const family = families[familyIdx];
 
       // Check if already a member
-      if (family.members.some((m: any) => m.id === userId)) {
+      if (family.members.some((m) => m.id === userId)) {
         return res.status(409).json({ error: "You are already a member of this family." });
       }
 
@@ -376,8 +570,8 @@ async function startServer() {
       });
 
       // Recalculate totals
-      family.totalCo2Saved = family.members.reduce((sum: number, m: any) => sum + (m.co2Saved || 0), 0);
-      family.totalWaterSaved = family.members.reduce((sum: number, m: any) => sum + (m.waterSaved || 0), 0);
+      family.totalCo2Saved = family.members.reduce((sum, m) => sum + (m.co2Saved || 0), 0);
+      family.totalWaterSaved = family.members.reduce((sum, m) => sum + (m.waterSaved || 0), 0);
 
       writeJSON("families.json", families);
 
@@ -385,7 +579,7 @@ async function startServer() {
       writeJSON("users.json", users);
 
       res.json({ family });
-    } catch (error: any) {
+    } catch (error) {
       console.error("Join family error:", error);
       res.status(500).json({ error: "Failed to join family." });
     }
@@ -395,13 +589,13 @@ async function startServer() {
   app.get("/api/family/:id", (req, res) => {
     try {
       const families = readJSON("families.json") || [];
-      const family = families.find((f: any) => f.id === req.params.id);
+      const family = families.find((f) => f.id === req.params.id);
       if (!family) return res.status(404).json({ error: "Family not found." });
 
       // Refresh member stats from users.json
       const users = readJSON("users.json") || [];
-      family.members = family.members.map((m: any) => {
-        const currentUser = users.find((u: any) => u.id === m.id);
+      family.members = family.members.map((m) => {
+        const currentUser = users.find((u) => u.id === m.id);
         if (currentUser) {
           return {
             ...m,
@@ -417,12 +611,12 @@ async function startServer() {
         return m;
       });
 
-      family.totalCo2Saved = family.members.reduce((sum: number, m: any) => sum + (m.co2Saved || 0), 0);
-      family.totalWaterSaved = family.members.reduce((sum: number, m: any) => sum + (m.waterSaved || 0), 0);
-      family.totalCostSaved = family.members.reduce((sum: number, m: any) => sum + (m.costSaved || 0), 0);
+      family.totalCo2Saved = family.members.reduce((sum, m) => sum + (m.co2Saved || 0), 0);
+      family.totalWaterSaved = family.members.reduce((sum, m) => sum + (m.waterSaved || 0), 0);
+      family.totalCostSaved = family.members.reduce((sum, m) => sum + (m.costSaved || 0), 0);
 
       res.json({ family });
-    } catch (error: any) {
+    } catch (error) {
       console.error("Get family error:", error);
       res.status(500).json({ error: "Failed to fetch family." });
     }
@@ -432,14 +626,14 @@ async function startServer() {
   app.get("/api/family/:id/leaderboard", (req, res) => {
     try {
       const families = readJSON("families.json") || [];
-      const family = families.find((f: any) => f.id === req.params.id);
+      const family = families.find((f) => f.id === req.params.id);
       if (!family) return res.status(404).json({ error: "Family not found." });
 
       // Refresh and sort by XP
       const users = readJSON("users.json") || [];
       const leaderboard = family.members
-        .map((m: any) => {
-          const currentUser = users.find((u: any) => u.id === m.id);
+        .map((m) => {
+          const currentUser = users.find((u) => u.id === m.id);
           return currentUser
             ? {
                 id: m.id,
@@ -454,17 +648,74 @@ async function startServer() {
               }
             : m;
         })
-        .sort((a: any, b: any) => (b.xp || 0) - (a.xp || 0));
+        .sort((a, b) => (b.xp || 0) - (a.xp || 0));
 
       res.json({ leaderboard, familyName: family.name });
-    } catch (error: any) {
+    } catch (error) {
       console.error("Leaderboard error:", error);
       res.status(500).json({ error: "Failed to fetch leaderboard." });
     }
   });
 
   // ════════════════════════════════════════════════════════════════════════
-  // AI COACH ENDPOINT (Enhanced with user stats context)
+  // AUTHENTICATION GATEWAY ENDPOINTS
+  // ════════════════════════════════════════════════════════════════════════
+
+  app.post("/api/auth/login", (req, res) => {
+    try {
+      const { email, mobile, password } = req.body;
+      if (!email || !password) {
+        return res.status(400).json({ success: false, error: "Email and password are required." });
+      }
+
+      const users = readJSON("users.json") || [];
+      const user = users.find(
+        (u) => (u.email && u.email.toLowerCase() === email.toLowerCase()) || (mobile && u.mobile === mobile)
+      );
+
+      // Create session token
+      const token = "gstok_" + Date.now() + "_" + Math.random().toString(36).substring(2, 8);
+      const userPayload = user ? { id: user.id, name: user.name, email: user.email, mobile: user.mobile || mobile } : { id: "usr_" + Date.now(), name: email.split("@")[0], email, mobile: mobile || "" };
+
+      res.json({ success: true, token, user: userPayload });
+    } catch (error) {
+      console.error("Login error:", error);
+      res.status(500).json({ success: false, error: "Authentication failed." });
+    }
+  });
+
+  app.post("/api/auth/register", (req, res) => {
+    try {
+      const { name, email, mobile, password } = req.body;
+      if (!email || !password || !mobile) {
+        return res.status(400).json({ success: false, error: "All fields are required for registration." });
+      }
+
+      const users = readJSON("users.json") || [];
+      const existing = users.find((u) => u.email && u.email.toLowerCase() === email.toLowerCase());
+      if (existing) {
+        return res.status(400).json({ success: false, error: "An account with this email already exists." });
+      }
+
+      const newUser = createDefaultUser(name || email.split("@")[0], email, password);
+      newUser.mobile = mobile;
+      users.push(newUser);
+      writeJSON("users.json", users);
+
+      const token = "gstok_" + Date.now() + "_" + Math.random().toString(36).substring(2, 8);
+      res.json({
+        success: true,
+        token,
+        user: { id: newUser.id, name: newUser.name, email: newUser.email, mobile: newUser.mobile },
+      });
+    } catch (error) {
+      console.error("Registration error:", error);
+      res.status(500).json({ success: false, error: "Registration failed." });
+    }
+  });
+
+  // ════════════════════════════════════════════════════════════════════════
+  // AI COACH ENDPOINT (Powered by Groq API)
   // ════════════════════════════════════════════════════════════════════════
 
   app.post("/api/chat", async (req, res) => {
@@ -501,26 +752,28 @@ Keep answers incredibly positive, inspiring, and accessible. Do not focus on com
 Format with short paragraphs, clear spacing, lists with emojis, and bold tags for emphasis. Key thoughts must be highly readable and actionable. Match query length but try to be efficient (under 3 short paragraphs). Give 1-2 small habits they can try today in every response!
 ${statsContext}`;
 
-      // Map incoming chat message formats to Gemini parts structure
-      const contents = messages.map((msg: any) => ({
-        role: msg.role === "assistant" ? "model" : "user",
-        parts: [{ text: msg.content }],
-      }));
+      // Map incoming chat message formats to Groq chat completions structure
+      const formattedMessages = [
+        { role: "system", content: systemInstruction },
+        ...messages.map((msg) => ({
+          role: msg.role === "model" || msg.role === "assistant" ? "assistant" : "user",
+          content: msg.content || (msg.parts && msg.parts[0]?.text) || "",
+        })),
+      ];
 
-      const model = "gemini-3.5-flash";
-      const response = await ai.models.generateContent({
-        model,
-        contents,
-        config: {
-          systemInstruction,
-          temperature: 0.7,
-        },
+      const chatCompletion = await groq.chat.completions.create({
+        messages: formattedMessages,
+        model: "llama-3.3-70b-versatile",
+        temperature: 0.7,
+        max_tokens: 600,
       });
 
-      const replyContent = response.text || "Every action counts, just like a seed turning into a grand oak! How can I help you today? 🌱";
+      const replyContent =
+        chatCompletion.choices[0]?.message?.content ||
+        "Every action counts, just like a seed turning into a grand oak! How can I help you today? 🌱";
       res.json({ reply: replyContent });
-    } catch (error: any) {
-      console.error("Error in AI Coach endpoint API handler:", error);
+    } catch (error) {
+      console.error("Error in Groq AI Coach endpoint API handler:", error);
       res.json({
         reply: "I lost my connection for a quick second, but my roots are strong! Let's talk about simple ways we can save energy or reduce food waste today. 🌳",
       });
@@ -540,7 +793,7 @@ ${statsContext}`;
   } else {
     const distPath = path.join(process.cwd(), "dist");
     app.use(express.static(distPath));
-    app.get("*", (req: any, res: any) => {
+    app.get("*", (req, res) => {
       res.sendFile(path.join(distPath, "index.html"));
     });
   }
