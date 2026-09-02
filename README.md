@@ -215,7 +215,8 @@ Features:
 * Group Progress
 * Community Impact
 
-PNG
+<img width="517" height="830" alt="image" src="https://github.com/user-attachments/assets/564543ec-de05-4744-bbcc-c7500e71ff50" />
+
 
 
 ---
