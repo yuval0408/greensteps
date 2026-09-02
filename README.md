@@ -1,4 +1,5 @@
-<img width="325" height="88" alt="image" src="https://github.com/user-attachments/assets/d0ea4eba-f9c9-4943-a11b-59077d1475a2" />
+<img width="523" height="297" alt="image" src="https://github.com/user-attachments/assets/9c615a17-167b-4416-b690-1b213f79cf84" />
+
 
 
 > Small Steps. Lasting Impact.
@@ -140,7 +141,8 @@ Cursor Tracking Eyes
 Privacy Animation
 Authentication
 
-![Uploading image.png…]()
+<img width="532" height="862" alt="image" src="https://github.com/user-attachments/assets/f908caa8-12c1-4a2e-b1be-33d15e7526d6" />
+
 
 
 
@@ -154,7 +156,9 @@ Features:
 * Streak Counter
 * GreenBuddy Suggestions
 
-<img width="773" height="819" alt="image" src="https://github.com/user-attachments/assets/1bda9154-b717-4948-82a9-722ade35f750" />
+<img width="518" height="741" alt="image" src="https://github.com/user-attachments/assets/0a20b0c6-6252-470b-a0ff-e6c1d595c34c" />
+<img width="530" height="833" alt="image" src="https://github.com/user-attachments/assets/7a587c01-4af7-43b9-b104-f1714f0e9998" />
+
 
 ---
 
@@ -167,12 +171,13 @@ Features:
 * Energy Tracking
 * Shopping Tracking
 
-<img width="768" height="694" alt="image" src="https://github.com/user-attachments/assets/5fc5b1ca-02da-404b-a5f3-aaced5984d60" />
+<img width="531" height="822" alt="image" src="https://github.com/user-attachments/assets/204bb4af-39e3-4a5a-9660-4bd4af100bc6" />
+
 
 
 ---
 
-###  Challenges
+###  Tasks
 
 Features:
 
@@ -181,23 +186,12 @@ Features:
 * Rewards
 * Progress Tracking
 
-<img width="765" height="816" alt="image" src="https://github.com/user-attachments/assets/4c485c3c-d15d-4da9-ac1f-ba516d750bea" />
-
----
-
-###  Forest Growth
-
-Features:
-
-* Forest Visualization
-* XP Progress
-* Level System
-* Growth Milestones
-
-<img width="775" height="811" alt="image" src="https://github.com/user-attachments/assets/f7428c1d-5916-422e-94e0-20f8b94f589f" />
+<img width="520" height="832" alt="image" src="https://github.com/user-attachments/assets/9a863408-2782-4871-9aac-8cc4e74abfe9" />
 
 
 ---
+
+
 
 ###  GreenBuddy AI
 
@@ -208,7 +202,8 @@ Features:
 * Sustainability Guidance
 * Progress Insights
 
-<img width="768" height="818" alt="image" src="https://github.com/user-attachments/assets/ad6262a9-9d1a-45d6-8129-b5fbd884dde9" />
+<img width="508" height="712" alt="image" src="https://github.com/user-attachments/assets/bdb0758a-9ab7-4654-9a0b-6c53e33b0e79" />
+
 
 
 ###  Family Mode
@@ -220,7 +215,8 @@ Features:
 * Group Progress
 * Community Impact
 
-<img width="768" height="814" alt="image" src="https://github.com/user-attachments/assets/8766f278-b68a-492d-b77f-7014336a9620" />
+<img width="517" height="830" alt="image" src="https://github.com/user-attachments/assets/564543ec-de05-4744-bbcc-c7500e71ff50" />
+
 
 
 ---
@@ -236,7 +232,7 @@ Features:
 
 ### AI
 
-* Gemini API
+
 * GreenBuddy AI Assistant
 
 ---
