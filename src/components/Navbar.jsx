@@ -1,19 +1,18 @@
 import React from "react";
-import { Home, Compass, Trophy, MessageSquare, User, Users, Globe } from "lucide-react";
+import { Home, Compass, Trophy, MessageSquare, User, Users } from "lucide-react";
 
 export default function Navbar({ currentScreen, setScreen, unreadCoachMessage = false }) {
   const items = [
     { type: "home", label: "Home", icon: Home },
     { type: "track", label: "Track", icon: Compass },
     { type: "challenges", label: "Tasks", icon: Trophy },
-    { type: "leaderboard", label: "India 🇮🇳", icon: Globe },
     { type: "family", label: "Family", icon: Users },
     { type: "coach", label: "Coach", icon: MessageSquare },
     { type: "profile", label: "Me", icon: User },
   ];
 
   return (
-    <nav aria-label="Main navigation" className="eco-nav fixed bottom-0 left-0 right-0 z-50 bg-[#ffffff]/98 backdrop-blur-md border-t border-[#85a528]/25 shadow-[0_-4px_20px_rgba(0,0,0,0.04)] pb-safe h-[82px] flex items-center justify-around px-1 max-w-lg mx-auto">
+    <nav aria-label="Main navigation" className="eco-nav fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] z-50 bg-[#ffffff]/98 backdrop-blur-md border-t border-x border-[#85a528]/30 shadow-[0_-4px_20px_rgba(0,0,0,0.08)] pb-safe h-[82px] flex items-center justify-around px-1 md:bottom-4 md:rounded-b-3xl">
       {items.map((item) => {
         const Icon = item.icon;
         const isActive = currentScreen === item.type;

@@ -13,7 +13,7 @@ import {
   Heart,
 } from "lucide-react";
 
-export default function Family({ stats, familyData, onCreateFamily, onJoinFamily }) {
+export default function Family({ stats, familyData, onCreateFamily, onJoinFamily, onLeaveFamily }) {
   const [familyName, setFamilyName] = useState("");
   const [inviteCode, setInviteCode] = useState("");
   const [showCreate, setShowCreate] = useState(false);
@@ -340,6 +340,23 @@ export default function Family({ stats, familyData, onCreateFamily, onJoinFamily
           </p>
         </div>
       </section>
+
+      {/* Leave / Reset Family Button */}
+      {onLeaveFamily && (
+        <div className="pt-2 text-center">
+          <button
+            id="btn-leave-family"
+            onClick={() => {
+              if (confirm("Are you sure you want to leave this family group?")) {
+                onLeaveFamily();
+              }
+            }}
+            className="text-xs font-bold text-red-500 hover:underline cursor-pointer"
+          >
+            Leave Family Group
+          </button>
+        </div>
+      )}
     </div>
   );
 }
