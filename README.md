@@ -18,6 +18,14 @@ Users complete eco-friendly actions, earn rewards, grow their virtual forest, an
 
 The goal is to make sustainability accessible, enjoyable, and rewarding for everyone.
 
+##🚀 Live Demo
+
+🌐 Try GreenSteps
+
+https://greensteps-tawny.vercel.app/
+
+Experience the complete GreenSteps MVP directly in your browser.
+
 ---
 
 ## ✨ Key Features
